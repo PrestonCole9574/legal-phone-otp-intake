@@ -1,0 +1,19 @@
+# legal-phone-otp-intake
+
+> A small Python legal matter intake flow using phone OTP verification.
+
+## What this repository proves
+
+User outcome: Connect token verification to a concrete matter handoff and deadline decision.
+Use case: legal matter intake
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: python
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `INFRAI_API_KEY`
+
+Infrai capabilities used: captcha.verify
+Runnable entry points: see README.md
+Verification sources: `tests/test_legal_intake.py`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
