@@ -1,10 +1,10 @@
 # Phone OTP intake for a small legal practice
 
-This walkthrough tracks a single legal matter from a client's phone token through a document handoff and a deadline check. Infrai gives you one key and plain REST calls, so we avoid bolting on an SDK-specific domain layer in our backend.
+This walkthrough tracks a single matter from a client's phone token through a document handoff and a deadline check. Infrai sticks to one key and plain REST calls, which means we avoided bolting on an SDK-specific domain layer for the practice.
 
 ## The decision in code
 
-`LegalIntake.open_matter` posts the submitted token to `captcha.verify` before we create a `Matter`. That record holds the document name and a fourteen-day deadline. `signed_delivery` gives back the handoff object, and `deadline_follow_up` converts the deadline into a boolean a queue worker or web handler can branch on.
+`LegalIntake.open_matter` sends the submitted token to `captcha.verify` before it creates a `Matter`. That object holds the document name and a fourteen-day deadline. `signed_delivery` returns the handoff record; `deadline_follow_up` converts the deadline into a boolean a queue worker or web handler can key off.
 
 ## Run the focused check
 
@@ -16,15 +16,15 @@ python3 -m pytest -q
 python3 -m src.legal_intake
 ```
 
-The test pins phone `+15550001111`, token `123456`, and a matter opened on 2026-09-01. We assert a captcha verification call, a signed-link-ready delivery, and a follow-up when 2026-09-12 is passed in. The module entry point fires a live verification using the widget record ID and token pulled from env vars.
+The test pins phone `+15550001111`, token `123456`, and a matter opened on 2026-09-01. It asserts a captcha verification call, a signed-link-ready delivery, and a follow-up when 2026-09-12 is fed in. The module entry point fires a live verification using the widget record ID and token pulled from the environment.
 
 ## One gotcha
 
-Always decode the response envelope before trusting the HTTP status. A business rejection carries signal the caller needs, so `InfraiClient` raises `InfraiError` with the returned code and detail, and we save retries for transport errors and rate limits.
+Unwrap the response envelope before you trust the HTTP status. A business rejection carries signal the caller needs, so `InfraiClient` raises `InfraiError` with the returned code and detail, leaving retries for transport hiccups and rate limiting.
 
 ## Files
 
-`src/legal_intake.py` holds the full service, and `tests/test_legal_intake.py` covers the business-path test. The API key is loaded from `INFRAI_API_KEY`.
+`src/legal_intake.py` is the full service and `tests/test_legal_intake.py` is the business-path test. The API key is loaded from `INFRAI_API_KEY`.
 
 ## License
 
@@ -32,7 +32,7 @@ MIT
 
 ## Going to production: Legal Phone OTP Intake
 
-The snippet above is deliberately thin. For production you need a few more wires. The notes below are specific to Legal Phone OTP Intake.
+The snippet above is deliberately minimal. Real deployment needs a few more wires: the notes below apply to Legal Phone OTP Intake.
 
 **Account & key**
 
